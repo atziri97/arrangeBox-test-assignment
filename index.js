@@ -173,6 +173,7 @@ class ArrangeBoxControl extends HTMLElement {
       )     
   };
 
+  //HTML разметка
   #createHTML() {    
     const styleSheetLink = document.createElement('link');
     styleSheetLink.setAttribute('rel', 'stylesheet');
@@ -300,30 +301,6 @@ class ArrangeBoxControl extends HTMLElement {
     buttonsSortActiveWrap.appendChild(this.buttonActiveSortDownBottom);
   };
 
-  #handleClickItem(e) {
-    if (e.target.parentElement == this.shadow.getElementById('list')) {
-      if (this.activeItemsLeft.includes(e.target) === false) {
-        this.activeItemsLeft = [...this.activeItemsLeft, e.target];
-        this.latestSelectedItem = e.target;
-        this.#assignStyles()
-      } else {
-        this.activeItemsLeft = this.activeItemsLeft.filter(current => current != e.target);
-        this.latestSelectedItem = {};
-        this.#assignStyles()  
-      }  
-    } else if (e.target.parentElement == this.shadow.getElementById('list-active')) {
-      if (this.activeItemsRight.includes(e.target) === false) {
-        this.activeItemsRight = [...this.activeItemsRight, e.target];
-        this.latestSelectedItem = e.target;
-        this.#assignStyles()
-      } else {
-        this.activeItemsRight = this.activeItemsRight.filter(current => current != e.target);
-        this.latestSelectedItem = {};  
-        this.#assignStyles()
-      }
-    }  
-  };
-
   #assignStyles() {
     for (let child of this.shadow.getElementById('list').children) {  
       if (this.latestSelectedItem == child) {
@@ -374,6 +351,31 @@ class ArrangeBoxControl extends HTMLElement {
         this.activeItemsRight = [];
         this.#assignStyles();       
     });
+    }  
+  };
+
+  //хэндлеры ивентов
+  #handleClickItem(e) {
+    if (e.target.parentElement == this.shadow.getElementById('list')) {
+      if (this.activeItemsLeft.includes(e.target) === false) {
+        this.activeItemsLeft = [...this.activeItemsLeft, e.target];
+        this.latestSelectedItem = e.target;
+        this.#assignStyles()
+      } else {
+        this.activeItemsLeft = this.activeItemsLeft.filter(current => current != e.target);
+        this.latestSelectedItem = {};
+        this.#assignStyles()  
+      }  
+    } else if (e.target.parentElement == this.shadow.getElementById('list-active')) {
+      if (this.activeItemsRight.includes(e.target) === false) {
+        this.activeItemsRight = [...this.activeItemsRight, e.target];
+        this.latestSelectedItem = e.target;
+        this.#assignStyles()
+      } else {
+        this.activeItemsRight = this.activeItemsRight.filter(current => current != e.target);
+        this.latestSelectedItem = {};  
+        this.#assignStyles()
+      }
     }  
   };
 
@@ -612,12 +614,10 @@ class ArrangeBoxControl extends HTMLElement {
   }
 };
 
-
 customElements.define('arrange-box', ArrangeBoxControl);
 
 const arrangeBoxInstance = document.createElement('arrange-box');
 document.getElementById('arrangebox-container').appendChild(arrangeBoxInstance);
-arrangeBoxInstance.changeItems(arrangeBoxInstance.generateRandomItems(20))
 
 //arrangeBoxInstance.changeItems(list) - изменить список возможных значений
 //arrangeBoxInstance.getCurrentState() - получить текущее значение контрола
@@ -668,6 +668,7 @@ testTools.appendChild(testGenerateNewRandomItemsInput);
 testGenerateNewRandomItemsInput.setAttribute('placeholder', 'Кол-во (макс. 100)');    
 testGenerateNewRandomItemsInput.addEventListener('input', (e) => {testInputValue = e.target.value;});
 
+//Заранее заданные массивы для тестирования методов контрола
 let changeItemsExample = 
 [
   {id: 0, title: 'Пример значения #1'},

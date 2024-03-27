@@ -5,6 +5,7 @@
 
 #arrange-box {
 	--border: #b1cdff;
+	--main-padding: 16px;
   }
 
 #arrange-box {
@@ -13,7 +14,7 @@
 	align-items: center;
 	border: solid 1px var(--border);
 	border-radius: 4px;
-    margin-bottom: 10px;
+    margin: 30px 0;
 	background-image: linear-gradient(white, #f1f5ff);
 	box-shadow: 0px 0px 20px 6px #e3e3e3;
 }
@@ -21,17 +22,17 @@
 .title-wrap {
 	display: flex;
 	flex-direction: column;
-	margin-left: 38px;
+	margin-left: 46px;
 }
 
 #title-active-wrap {
 	margin-left: 0;
-	margin-right: 38px;
+	margin-right: 46px;
 }
 
 #title-active-wrap .list-title {
 	margin-bottom: 10px;
-	width: 200px;
+	width: auto;
 }
 
 .list-wrap {
@@ -39,24 +40,32 @@
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 8px;
+	gap: var(--main-padding);
 }
 
 .field-wrap {
 	display: flex;
 	flex-direction: column;
 	border-radius: 4px;
-	padding: 8px
+	padding: var(--main-padding)
 }
 
 .list-title {
 	text-align: center;
-	margin-bottom: 8px;
-	height: 39px
+	margin-bottom: var(--main-padding);
+}
+
+#list-wrap {
+	flex-direction: row-reverse;
+}
+
+#list-active-wrap {
+	flex-direction: row;
 }
 
 .list {
-	width: 200px;
+	width: 300px;
+	height: 400px;
 }
 
 ::-webkit-scrollbar {
@@ -120,10 +129,14 @@ button:active {
 	font-size: 1em;
 	border: solid 1px var(--border);
 	border-radius: 4px;
-	padding: 4px;
+	padding: 8px;
 	margin: 0px;
-	width: 200px;
+	width: auto;
 	box-sizing: border-box;
+}
+
+::placeholder {
+	color: rgb(184, 184, 184)
 }
 
 ul {
@@ -141,7 +154,7 @@ ul {
 }
 
 li {
-	padding: 8px;
+	padding: var(--main-padding);
 	cursor: pointer;
 	box-sizing: border-box;
 	transition: background-color 0.1s;
@@ -169,20 +182,4 @@ li:hover {
 
 .hide-item {
 	display: none;
-}
-
-#test-tools {
-    position: absolute;
-    right: 10px;
-	display: flex;
-	flex-direction: column;
-	gap: 4px;
-}
-
-#test-tools button {
-	width: 200px;
-	height: auto;
-	padding: 8px;
-	text-align: left;
-    margin-right: 8px
 }

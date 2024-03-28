@@ -4,19 +4,19 @@
 
 html, body {
 	margin: 0;
-	font-family: helvetica, arial, sans-serif;
+	font-family: 'Roboto', sans-serif;
 }
 
 body {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	min-height: 100vh;
 }
 
 button {
-	position: fixed;
-	bottom: 20px;
+	font-family: 'Roboto', sans-serif;
 	border: solid 1px #b1cdff;
 	background-color: #c3d7ff;
 	transition: background-color 0.2s;
@@ -32,6 +32,7 @@ button:active {
 }
 
 #test-tools {
+	margin-bottom: 80px;
 	display: flex;
 	flex-direction: row;
 	max-width: 788px;
@@ -39,8 +40,11 @@ button:active {
 	
 }
 
+#test-add-instance {
+	margin: 30px 0;
+}
+
 #test-tools input {
-	margin-top: -20px;
 	padding: 10px;
 	height: 100px;
 	border-radius: 4px;

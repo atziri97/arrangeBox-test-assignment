@@ -1,3 +1,5 @@
+import ArrangeBoxControl from "./ArrangeBoxControl-class";
+
 customElements.define('arrange-box', ArrangeBoxControl);
 
 addNewArrangeBoxInstance()

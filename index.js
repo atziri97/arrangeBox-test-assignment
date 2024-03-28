@@ -35,7 +35,10 @@ function addNewArrangeBoxInstance() {
   const testSetSelectedItems = document.createElement('button');
   testSetSelectedItems.textContent = 'Задать список выбранных значений (прим. ids: 0, 3, 8, 12)';
   testTools.appendChild(testSetSelectedItems);
-  testSetSelectedItems.addEventListener('click', () => arrangeBoxInstance.setSelectedItems(exampleSelectedItems));
+  testSetSelectedItems.addEventListener('click', () => {
+    arrangeBoxInstance.setSelectedItems(exampleSelectedItems);
+    alert('Установлены значения из массива exampleSelectedItems')
+  });
 
   const testResetToDefault = document.createElement('button');
   testResetToDefault.textContent = 'Сбросить списки до начального состояния';
@@ -45,7 +48,10 @@ function addNewArrangeBoxInstance() {
   const testChangeItems = document.createElement('button');
   testChangeItems.textContent = 'Установить заранее заданный список возможных значений';
   testTools.appendChild(testChangeItems);
-  testChangeItems.addEventListener('click', () => arrangeBoxInstance.changeItems(changeItemsExample));
+  testChangeItems.addEventListener('click', () => {
+    arrangeBoxInstance.changeItems(changeItemsExample);
+    alert('Установлены значения из массива changeItemsExample')
+  });
 
   let testInputValue;
   const testGenerateNewRandomItems = document.createElement('button');

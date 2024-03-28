@@ -1,5 +1,3 @@
-import ArrangeBoxControl from "./ArrangeBoxControl-class";
-
 customElements.define('arrange-box', ArrangeBoxControl);
 
 addNewArrangeBoxInstance()
@@ -50,7 +48,12 @@ function addNewArrangeBoxInstance() {
   const testGenerateNewRandomItems = document.createElement('button');
   testGenerateNewRandomItems.textContent = 'Сгенерировать новый список рандомных значений';
   testTools.appendChild(testGenerateNewRandomItems);
-  testGenerateNewRandomItems.addEventListener('click', () => arrangeBoxInstance.changeItems(generateRandomItems(testInputValue)));
+  testGenerateNewRandomItems.addEventListener('click', () => {
+    if (testInputValue) {arrangeBoxInstance.changeItems(generateRandomItems(testInputValue))
+    } else {
+      alert('Введите кол-во объектов в поле')
+    }
+});
   const testGenerateNewRandomItemsInput = document.createElement('input');
   testTools.appendChild(testGenerateNewRandomItemsInput);
   testGenerateNewRandomItemsInput.setAttribute('placeholder', 'Кол-во (макс. 100)');    

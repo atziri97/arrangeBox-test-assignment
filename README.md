@@ -45,3 +45,7 @@ arrangeBoxInstance.changeItems(itemList)
 ```javascript
 [0, 1, 6, 12, ...];
 ```
+---
+https://atziri97.github.io/arrangeBox-test-assignment/ - Демонстрация работы контрола.
+
+

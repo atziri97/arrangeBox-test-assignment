@@ -2,6 +2,7 @@ import ArrangeBoxControl from "./ArrangeBoxControl-class.js";
 
 customElements.define('arrange-box', ArrangeBoxControl);
 
+//Функция ддя создания arrangebox'а с дополнительными кнопками для тестирования 
 addNewArrangeBoxInstance()
 
 //arrangeBoxInstance.changeItems(list) - изменить список возможных значений

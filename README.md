@@ -28,13 +28,13 @@ arrangeBoxInstance.changeItems(itemList)
 <code>.getCurrentState()</code> - Получить текущее значение контрола, возвращает текущие значения списков в виде объекта со следущей структурой:
 
 ```javascript
-      {
-        leftList: [
-          {}, {}, ...
-        ],
-        rightList: [
-          {}, {}, ...
-        ]  
+{
+  leftList: [
+    {}, {}, ...
+  ],
+  rightList: [
+    {}, {}, ...
+  ]  
       };
 ```
 <code>.resetToDefault()</code> - Сбросить контрол до началаьного состояния (будет установлен последний загруженный список).  

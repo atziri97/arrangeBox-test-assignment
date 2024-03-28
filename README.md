@@ -29,13 +29,15 @@ arrangeBoxInstance.changeItems(itemList)
 
 ```javascript
 {
-  leftList: [
+  leftList:
+  [
     {}, {}, ...
   ],
-  rightList: [
+  rightList:
+  [
     {}, {}, ...
   ]  
-      };
+};
 ```
 <code>.resetToDefault()</code> - Сбросить контрол до началаьного состояния (будет установлен последний загруженный список).  
 <code>.setSelectedItems(idsArray)</code> - Установить список выбранных значений, в качестве аргумента принимается массив с id объектов, которые нужно выбрать. Пример:

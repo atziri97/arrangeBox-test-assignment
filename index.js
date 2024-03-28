@@ -1,4 +1,4 @@
-import ArrangeBoxControl from "./ArrangeBoxControl-class";
+import ArrangeBoxControl from "./ArrangeBoxControl-class.js";
 
 customElements.define('arrange-box', ArrangeBoxControl);
 

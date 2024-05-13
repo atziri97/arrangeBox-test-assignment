@@ -1,6 +1,10 @@
 import ArrangeBoxControlButton from "./ArrangeBoxControl-button-class.js";
+import ArrangeBoxControlListItem from "./ArrangeBoxControl-listItem-class.js";
+import ArrangeBoxControlTextFilterClass from "./ArrangeBoxControl-text-filter-class.js";
 
+customElements.define('arrangeboxcontrol-list-item', ArrangeBoxControlListItem);
 customElements.define('arrangeboxcontrol-button', ArrangeBoxControlButton);
+customElements.define('arrangeboxcontrol-text-filter', ArrangeBoxControlTextFilterClass);
 
 export default class ArrangeBoxControl extends HTMLElement {
   constructor() {
@@ -23,8 +27,8 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.buttonActiveSortDown = document.createElement('arrangeboxcontrol-button');
     this.buttonActiveSortDownBottom = document.createElement('arrangeboxcontrol-button');
 
-    this.inputFilter = document.createElement('input');
-    this.inputActiveFilter = document.createElement('input');
+    this.inputFilter = document.createElement('arrangeboxcontrol-text-filter')      
+    this.inputActiveFilter = document.createElement('arrangeboxcontrol-text-filter')
 
     this.items = [];
     this.displayedItems = [];
@@ -41,8 +45,8 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.handleDeactivatePress = this.handleDeactivatePress.bind(this);
     this.handleDeactivateAllPress = this.handleDeactivateAllPress.bind(this);
 
-    this.handleFilterByNameLeft = this.handleFilterByNameLeft.bind(this);
-    this.handleFilterByNameRight = this.handleFilterByNameRight.bind(this);
+/*     this.handleFilterByNameLeft = this.handleFilterByNameLeft.bind(this);
+    this.handleFilterByNameRight = this.handleFilterByNameRight.bind(this); */
   };
 
   #resetMainVars() {
@@ -69,8 +73,8 @@ export default class ArrangeBoxControl extends HTMLElement {
       list2.removeChild(list2.lastChild)
     };
     this.items.forEach(current => {
-      let element = document.createElement('li');
-      element.textContent = current.title;
+      let element = document.createElement('arrangeboxcontrol-list-item');
+      element.text = current.title;
       element.id = `item-#${current.id}`
       list1
         .appendChild(element)
@@ -139,7 +143,7 @@ export default class ArrangeBoxControl extends HTMLElement {
         } else {
           console.log(`Объект с id ${current} отсутствует в списке`)
         }
-        this.#assignStyles()      
+        this.assignStyles()      
       });
       this.#reRenderLists('left')
       } else {
@@ -276,7 +280,7 @@ export default class ArrangeBoxControl extends HTMLElement {
     buttonsSortActiveWrap.appendChild(this.buttonActiveSortDownBottom);
   };
 
-  #assignStyles() {
+  assignStyles() {
     for (let child of this.shadow.getElementById('list').children) {  
       if (this.latestSelectedItem == child) {
         child.className = 'item-active-latest'
@@ -318,13 +322,13 @@ export default class ArrangeBoxControl extends HTMLElement {
       this.activeItemsLeft.forEach(current => {
         this.shadow.getElementById('list-active').insertBefore(current, this.shadow.getElementById('list-active').firstChild)
         this.activeItemsLeft = [];
-        this.#assignStyles();
+        this.assignStyles();
       });
     } else if (side == 'right') {
       this.activeItemsRight.forEach(current => {
         this.shadow.getElementById('list').insertBefore(current, this.shadow.getElementById('list').firstChild)
         this.activeItemsRight = [];
-        this.#assignStyles();       
+        this.assignStyles();       
     });
     }  
   };
@@ -335,21 +339,21 @@ export default class ArrangeBoxControl extends HTMLElement {
       if (this.activeItemsLeft.includes(e.target) === false) {
         this.activeItemsLeft = [...this.activeItemsLeft, e.target];
         this.latestSelectedItem = e.target;
-        this.#assignStyles()
+        this.assignStyles()
       } else {
         this.activeItemsLeft = this.activeItemsLeft.filter(current => current != e.target);
         this.latestSelectedItem = {};
-        this.#assignStyles()  
+        this.assignStyles()  
       }  
     } else if (e.target.parentElement == this.shadow.getElementById('list-active')) {
       if (this.activeItemsRight.includes(e.target) === false) {
         this.activeItemsRight = [...this.activeItemsRight, e.target];
         this.latestSelectedItem = e.target;
-        this.#assignStyles()
+        this.assignStyles()
       } else {
         this.activeItemsRight = this.activeItemsRight.filter(current => current != e.target);
         this.latestSelectedItem = {};  
-        this.#assignStyles()
+        this.assignStyles()
       }
     }  
   };
@@ -360,7 +364,7 @@ export default class ArrangeBoxControl extends HTMLElement {
         this.displayedItems = this.displayedItems.filter(current2 => current2 != current);
         this.selectedItems = [...this.selectedItems, current]
         this.latestSelectedItem = {}
-        this.#assignStyles()        
+        this.assignStyles()        
       });
       this.#reRenderLists('left')
     }
@@ -371,11 +375,11 @@ export default class ArrangeBoxControl extends HTMLElement {
         this.displayedItems = [];
         this.latestSelectedItem = {};
         this.activeItemsLeft = [];
-        this.#assignStyles()
+        this.assignStyles()
       for (let child of this.shadow.getElementById('list').children) {
         this.selectedItems = [...this.selectedItems, child];
         this.activeItemsLeft = [...this.activeItemsLeft, child];
-        this.#assignStyles()       
+        this.assignStyles()       
       }
       this.selectedItems = this.selectedItems.reverse()
       this.activeItemsLeft = this.activeItemsLeft.reverse()
@@ -389,7 +393,7 @@ export default class ArrangeBoxControl extends HTMLElement {
           this.selectedItems = this.selectedItems.filter(current2 => current2 != current);
           this.displayedItems = [...this.displayedItems, current];
           this.latestSelectedItem = {};
-          this.#assignStyles()         
+          this.assignStyles()         
       });
       this.#reRenderLists('right')
     }
@@ -400,11 +404,11 @@ export default class ArrangeBoxControl extends HTMLElement {
         this.selectedItems = [];
         this.latestSelectedItem = {};
         this.activeItemsRight = [];
-        this.#assignStyles()
+        this.assignStyles()
       for (let child of this.shadow.getElementById('list-active').children) {
         this.displayedItems = [...this.displayedItems, child];
         this.activeItemsRight = [...this.activeItemsRight, child];
-        this.#assignStyles()       
+        this.assignStyles()       
       }
       this.displayedItems = this.displayedItems.reverse()
       this.activeItemsRight = this.activeItemsRight.reverse()
@@ -525,40 +529,6 @@ export default class ArrangeBoxControl extends HTMLElement {
       }
     }
   };
-  
-  handleFilterByNameLeft(e) {  
-    for (let child of this.shadow.getElementById('list').children) {
-      const processInputRegExp = new RegExp(/[^А-Яа-яA-Za-z#0-9\s]/, 'g')
-      if (processInputRegExp.test(e.target.value) === true) {
-        e.target.value = e.target.value.replace(processInputRegExp, '')
-      }
-      let searchRegExp = new RegExp(`${e.target.value}`, 'gi');
-      if (searchRegExp.test(child.textContent) === false) {
-        this.excludeItemsBySearchLeft = [...this.excludeItemsBySearchLeft, child]
-        this.#assignStyles()
-      } else {
-        this.excludeItemsBySearchLeft = this.excludeItemsBySearchLeft.filter(current => current != child)
-        this.#assignStyles()
-      }
-    }
-  };
-  
-  handleFilterByNameRight(e) {
-    for (let child of this.shadow.getElementById('list-active').children) {
-      const processInputRegExp = new RegExp(/[^А-Яа-яA-Za-z#0-9\s]/, 'g')
-      if (processInputRegExp.test(e.target.value) === true) {
-        e.target.value = e.target.value.replace(processInputRegExp, '')
-      }
-      let searchRegExp = new RegExp(`${e.target.value}`, 'gi');
-      if (searchRegExp.test(child.textContent) === false) {
-        this.excludeItemsBySearchRight = [...this.excludeItemsBySearchRight, child]
-        this.#assignStyles()
-      } else {
-        this.excludeItemsBySearchRight = this.excludeItemsBySearchRight.filter(current => current != child)
-        this.#assignStyles()
-      }
-    }
-  };
     
   connectedCallback() {
     this.#createHTML();
@@ -582,6 +552,10 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.buttonActiveSortDownBottom.addEventListener('click', () => this.handleSortDownBottomPress('right'))
 
     this.inputFilter.addEventListener('input', this.handleFilterByNameLeft);
-    this.inputActiveFilter.addEventListener('input', this.handleFilterByNameRight);
+    this.inputFilter.filterTargetList = this.shadow.getElementById('list').children;
+    this.inputFilter.parentArrangeBoxControlElement = this;
+    this.inputActiveFilter.addEventListener('input', this.handleFilterByNameRight)
+    this.inputActiveFilter.filterTargetList = this.shadow.getElementById('list-active').children;
+    this.inputActiveFilter.parentArrangeBoxControlElement = this;
   }
 };

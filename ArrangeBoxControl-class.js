@@ -1,23 +1,27 @@
+import ArrangeBoxControlButton from "./ArrangeBoxControl-button-class.js";
+
+customElements.define('arrangeboxcontrol-button', ArrangeBoxControlButton);
+
 export default class ArrangeBoxControl extends HTMLElement {
   constructor() {
     super();
     
     this.shadow = this.attachShadow({ mode: "closed" });
 
-    this.buttonActivate = document.createElement('button');
-    this.buttonActivateAll = document.createElement('button');
-    this.buttonDeactivate = document.createElement('button');
-    this.buttonDeactivateAll = document.createElement('button');
+    this.buttonActivate = document.createElement('arrangeboxcontrol-button');
+    this.buttonActivateAll = document.createElement('arrangeboxcontrol-button');
+    this.buttonDeactivate = document.createElement('arrangeboxcontrol-button');
+    this.buttonDeactivateAll = document.createElement('arrangeboxcontrol-button');
 
-    this.buttonSortUp = document.createElement('button');
-    this.buttonSortUpTop = document.createElement('button');
-    this.buttonSortDown = document.createElement('button');
-    this.buttonSortDownBottom = document.createElement('button');
+    this.buttonSortUp = document.createElement('arrangeboxcontrol-button');
+    this.buttonSortUpTop = document.createElement('arrangeboxcontrol-button');
+    this.buttonSortDown = document.createElement('arrangeboxcontrol-button');
+    this.buttonSortDownBottom = document.createElement('arrangeboxcontrol-button');
 
-    this.buttonActiveSortUp = document.createElement('button');
-    this.buttonActiveSortUpTop = document.createElement('button');
-    this.buttonActiveSortDown = document.createElement('button');
-    this.buttonActiveSortDownBottom = document.createElement('button');
+    this.buttonActiveSortUp = document.createElement('arrangeboxcontrol-button');
+    this.buttonActiveSortUpTop = document.createElement('arrangeboxcontrol-button');
+    this.buttonActiveSortDown = document.createElement('arrangeboxcontrol-button');
+    this.buttonActiveSortDownBottom = document.createElement('arrangeboxcontrol-button');
 
     this.inputFilter = document.createElement('input');
     this.inputActiveFilter = document.createElement('input');
@@ -149,7 +153,7 @@ export default class ArrangeBoxControl extends HTMLElement {
     const styleSheetLink = document.createElement('link');
     styleSheetLink.setAttribute('rel', 'stylesheet');
     styleSheetLink.setAttribute('href', 'ArrangeBoxControl-styles.css')
-    this.shadow.appendChild(styleSheetLink);
+    this.shadow.appendChild(styleSheetLink);    
 
     this.#createMainHTMLLayout();
     this.#createActivateButtons();
@@ -174,10 +178,10 @@ export default class ArrangeBoxControl extends HTMLElement {
     const buttonsActivateWrap = document.createElement('div');
     buttonsActivateWrap.id = 'buttons-activate-wrap';
     this.shadow.getElementById('arrange-box').appendChild(buttonsActivateWrap);
-    this.buttonActivate.textContent = '>';
-    this.buttonActivateAll.textContent = '>>';
-    this.buttonDeactivate.textContent = '<';
-    this.buttonDeactivateAll.textContent = '<<';
+    this.buttonActivate.text = '>';
+    this.buttonActivateAll.text = '>>';
+    this.buttonDeactivate.text = '<';
+    this.buttonDeactivateAll.text = '<<';
     buttonsActivateWrap.appendChild(this.buttonActivate);
     buttonsActivateWrap.appendChild(this.buttonActivateAll);
     buttonsActivateWrap.appendChild(this.buttonDeactivate);
@@ -216,10 +220,10 @@ export default class ArrangeBoxControl extends HTMLElement {
     buttonsSortWrap.className = 'buttons-sort-wrap';
     buttonsSortWrap.id = 'buttons-sort-wrap';
     this.shadow.getElementById('list-wrap').appendChild(buttonsSortWrap);
-    this.buttonSortUp.textContent = '^';
-    this.buttonSortUpTop.textContent = '^^';
-    this.buttonSortDown.textContent = 'v';
-    this.buttonSortDownBottom.textContent = 'vv';
+    this.buttonSortUp.text = '^';
+    this.buttonSortUpTop.text = '^^';
+    this.buttonSortDown.text = 'v';
+    this.buttonSortDownBottom.text = 'vv';
     buttonsSortWrap.appendChild(this.buttonSortUp);
     buttonsSortWrap.appendChild(this.buttonSortUpTop);
     buttonsSortWrap.appendChild(this.buttonSortDown);
@@ -262,10 +266,10 @@ export default class ArrangeBoxControl extends HTMLElement {
     buttonsSortActiveWrap.className = 'buttons-sort-wrap';
     buttonsSortActiveWrap.id = 'buttons-sort-active-wrap';
     this.shadow.getElementById('list-active-wrap').appendChild(buttonsSortActiveWrap);
-    this.buttonActiveSortUp.textContent = '^';
-    this.buttonActiveSortUpTop.textContent = '^^';
-    this.buttonActiveSortDown.textContent = 'v';
-    this.buttonActiveSortDownBottom.textContent = 'vv';
+    this.buttonActiveSortUp.text = '^';
+    this.buttonActiveSortUpTop.text = '^^';
+    this.buttonActiveSortDown.text = 'v';
+    this.buttonActiveSortDownBottom.text = 'vv';
     buttonsSortActiveWrap.appendChild(this.buttonActiveSortUp);
     buttonsSortActiveWrap.appendChild(this.buttonActiveSortUpTop);
     buttonsSortActiveWrap.appendChild(this.buttonActiveSortDown);

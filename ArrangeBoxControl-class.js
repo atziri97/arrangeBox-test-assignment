@@ -10,7 +10,7 @@ export default class ArrangeBoxControl extends HTMLElement {
   constructor() {
     super();
     
-    this.shadow = this.attachShadow({ mode: "closed" });
+    this.shadow = this.attachShadow({ mode: "open" });
 
     this.buttonActivate = document.createElement('arrangeboxcontrol-button');
     this.buttonActivateAll = document.createElement('arrangeboxcontrol-button');
@@ -30,6 +30,9 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.inputFilter = document.createElement('arrangeboxcontrol-text-filter')      
     this.inputActiveFilter = document.createElement('arrangeboxcontrol-text-filter')
 
+    this.list
+    this.listActive
+
     this.items = [];
     this.displayedItems = [];
     this.selectedItems = [];    
@@ -38,15 +41,8 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.excludeItemsBySearchLeft = [];
     this.excludeItemsBySearchRight = [];
     this.latestSelectedItem = {};
-
-    //для правильной работы 'this'
-    this.handleActivatePress = this.handleActivatePress.bind(this);
-    this.handleActivateAllPress = this.handleActivateAllPress.bind(this);
-    this.handleDeactivatePress = this.handleDeactivatePress.bind(this);
-    this.handleDeactivateAllPress = this.handleDeactivateAllPress.bind(this);
-
-/*     this.handleFilterByNameLeft = this.handleFilterByNameLeft.bind(this);
-    this.handleFilterByNameRight = this.handleFilterByNameRight.bind(this); */
+    this.isDragging = false;
+    this.hoveringElementWhileDragging = {};
   };
 
   #resetMainVars() {
@@ -75,10 +71,10 @@ export default class ArrangeBoxControl extends HTMLElement {
     this.items.forEach(current => {
       let element = document.createElement('arrangeboxcontrol-list-item');
       element.text = current.title;
-      element.id = `item-#${current.id}`
+      element.id = `item-#${current.id}`;
+      element.parentArrangeBoxControlElement = this;
       list1
         .appendChild(element)
-        .addEventListener('click', (e) => {this.#handleClickItem(e)});
       this.displayedItems = [...this.displayedItems, element];
     }
     )  
@@ -145,7 +141,7 @@ export default class ArrangeBoxControl extends HTMLElement {
         }
         this.assignStyles()      
       });
-      this.#reRenderLists('left')
+      this.reRenderLists('left')
       } else {
         console.log('Не удалось установить список выбранных значений: нет совпадений id')
       }      
@@ -156,8 +152,8 @@ export default class ArrangeBoxControl extends HTMLElement {
   #createHTML() {    
     const styleSheetLink = document.createElement('link');
     styleSheetLink.setAttribute('rel', 'stylesheet');
-    styleSheetLink.setAttribute('href', 'ArrangeBoxControl-styles.css')
-    this.shadow.appendChild(styleSheetLink);    
+    styleSheetLink.setAttribute('href', 'ArrangeBoxControl-styles.css');
+    this.shadow.appendChild(styleSheetLink);
 
     this.#createMainHTMLLayout();
     this.#createActivateButtons();
@@ -216,7 +212,8 @@ export default class ArrangeBoxControl extends HTMLElement {
     const list = document.createElement('ul');
     list.className = 'list';
     list.id = 'list';
-    listWrap.appendChild(list);     
+    listWrap.appendChild(list);
+    this.list = list;     
   };
   
   #createLeftListSortButtons() {
@@ -262,7 +259,8 @@ export default class ArrangeBoxControl extends HTMLElement {
     const listActive = document.createElement('ul');
     listActive.className = 'list';
     listActive.id = 'list-active'
-    listActiveWrap.appendChild(listActive);    
+    listActiveWrap.appendChild(listActive);
+    this.listActive = listActive;    
   };
 
   #createRightListSortButtons() {
@@ -307,7 +305,7 @@ export default class ArrangeBoxControl extends HTMLElement {
     };
   }
 
-  #reRenderLists(side) {
+  reRenderLists(side) {
     for (let child of this.shadow.getElementById('list').children) {
       if (this.displayedItems.includes(child) === false) {
         child.remove()
@@ -332,230 +330,45 @@ export default class ArrangeBoxControl extends HTMLElement {
     });
     }  
   };
-
-  //хэндлеры ивентов
-  #handleClickItem(e) {
-    if (e.target.parentElement == this.shadow.getElementById('list')) {
-      if (this.activeItemsLeft.includes(e.target) === false) {
-        this.activeItemsLeft = [...this.activeItemsLeft, e.target];
-        this.latestSelectedItem = e.target;
-        this.assignStyles()
-      } else {
-        this.activeItemsLeft = this.activeItemsLeft.filter(current => current != e.target);
-        this.latestSelectedItem = {};
-        this.assignStyles()  
-      }  
-    } else if (e.target.parentElement == this.shadow.getElementById('list-active')) {
-      if (this.activeItemsRight.includes(e.target) === false) {
-        this.activeItemsRight = [...this.activeItemsRight, e.target];
-        this.latestSelectedItem = e.target;
-        this.assignStyles()
-      } else {
-        this.activeItemsRight = this.activeItemsRight.filter(current => current != e.target);
-        this.latestSelectedItem = {};  
-        this.assignStyles()
-      }
-    }  
-  };
-
-  handleActivatePress() {
-    if (this.activeItemsLeft.length != 0) {
-      this.activeItemsLeft.forEach(current => {
-        this.displayedItems = this.displayedItems.filter(current2 => current2 != current);
-        this.selectedItems = [...this.selectedItems, current]
-        this.latestSelectedItem = {}
-        this.assignStyles()        
-      });
-      this.#reRenderLists('left')
-    }
-  };
-
-  handleActivateAllPress() {
-    if (this.shadow.getElementById('list').children.length != 0) {
-        this.displayedItems = [];
-        this.latestSelectedItem = {};
-        this.activeItemsLeft = [];
-        this.assignStyles()
-      for (let child of this.shadow.getElementById('list').children) {
-        this.selectedItems = [...this.selectedItems, child];
-        this.activeItemsLeft = [...this.activeItemsLeft, child];
-        this.assignStyles()       
-      }
-      this.selectedItems = this.selectedItems.reverse()
-      this.activeItemsLeft = this.activeItemsLeft.reverse()
-      this.#reRenderLists('left')
-    }
-  };
-
-  handleDeactivatePress() {
-    if (this.activeItemsRight.length != 0) {
-      this.activeItemsRight.forEach(current => {
-          this.selectedItems = this.selectedItems.filter(current2 => current2 != current);
-          this.displayedItems = [...this.displayedItems, current];
-          this.latestSelectedItem = {};
-          this.assignStyles()         
-      });
-      this.#reRenderLists('right')
-    }
-  };
-
-  handleDeactivateAllPress() {
-    if (this.shadow.getElementById('list-active').children.length != 0) {
-        this.selectedItems = [];
-        this.latestSelectedItem = {};
-        this.activeItemsRight = [];
-        this.assignStyles()
-      for (let child of this.shadow.getElementById('list-active').children) {
-        this.displayedItems = [...this.displayedItems, child];
-        this.activeItemsRight = [...this.activeItemsRight, child];
-        this.assignStyles()       
-      }
-      this.displayedItems = this.displayedItems.reverse()
-      this.activeItemsRight = this.activeItemsRight.reverse()
-      this.#reRenderLists('right')
-    }
-  }; 
-
-  sortActiveItems(list, activeItems) {
-    let sortedActiveItems = [];
-      for (let child of list.children) {
-        if (activeItems.includes(child) === true) {
-          sortedActiveItems = [...sortedActiveItems, child]
-        }
-      };
-    return sortedActiveItems;
-  }
-
-  handleSortUpTopPress(side) {
-    let sideList;
-    let activeItems;
-    if (side === 'left') {
-      sideList = this.shadow.getElementById('list');
-      activeItems = this.activeItemsLeft;
-    } else if (side === 'right') {
-      sideList = this.shadow.getElementById('list-active');
-      activeItems = this.activeItemsRight;
-    };
-    if (activeItems.length != 0) {
-      if (activeItems.includes(sideList.firstChild) === false) {
-        this.sortActiveItems(sideList, activeItems)
-          .reverse()
-          .forEach(current => {
-            for (let child of sideList.children) {
-              if (child === current) {
-                sideList.insertBefore(child, sideList.firstChild)
-                break
-              }
-            }  
-        })
-        sideList.scrollTop = 0
-      }
-    }
-  };
-
-  handleSortUpPress(side) {
-    let sideList;
-    let activeItems;
-    if (side === 'left') {
-      sideList = this.shadow.getElementById('list');
-      activeItems = this.activeItemsLeft;
-    } else if (side === 'right') {
-      sideList = this.shadow.getElementById('list-active');
-      activeItems = this.activeItemsRight;
-    }; 
-    if (activeItems.length != 0) {
-      if (activeItems.includes(sideList.firstChild) === false) {
-        this.sortActiveItems(sideList, activeItems)
-          .forEach(current => {
-            for (let child of sideList.children) {
-              if (child == current) {
-                sideList.insertBefore(child, child.previousElementSibling)            
-                break
-              }
-            }
-        })
-      }
-    }
-  };
-
-  handleSortDownPress(side) {
-    let sideList;
-    let activeItems;
-    if (side === 'left') {
-      sideList = this.shadow.getElementById('list');
-      activeItems = this.activeItemsLeft;
-    } else if (side === 'right') {
-      sideList = this.shadow.getElementById('list-active');
-      activeItems = this.activeItemsRight;
-    };
-    if (activeItems.length != 0) {
-      if (activeItems.includes(sideList.lastChild) === false) {
-        this.sortActiveItems(sideList, activeItems)
-          .reverse()
-          .forEach(current => { 
-            for (let child of sideList.children) {
-              if (child === current) {
-                sideList.insertBefore(child, child.nextElementSibling.nextElementSibling)
-                break
-              }
-            }
-        })
-      }
-    }
-  };  
-
-  handleSortDownBottomPress(side) {
-    let sideList;
-    let activeItems;
-    if (side === 'left') {
-      sideList = this.shadow.getElementById('list');
-      activeItems = this.activeItemsLeft;
-    } else if (side === 'right') {
-      sideList = this.shadow.getElementById('list-active');
-      activeItems = this.activeItemsRight;
-    };
-    if (activeItems.length != 0) {
-      if (activeItems.includes(sideList.lastChild) === false) {
-        this.sortActiveItems(sideList, activeItems)
-          .forEach((current) => {
-            for (let child of sideList.children) {
-              if (current == child) {
-                sideList.appendChild(child)
-                break
-              }
-            }
-          })
-        sideList.scrollTop = sideList.scrollHeight
-      }
-    }
-  };
     
   connectedCallback() {
     this.#createHTML();
 
-    this.buttonActivate.addEventListener('click', this.handleActivatePress);
-    this.buttonActivateAll.addEventListener('click', this.handleActivateAllPress);
+    this.buttonActivate.parentArrangeBoxControlElement = this;
+    this.buttonActivate.setAttribute('data-button-type', 'activate');
+    this.buttonActivateAll.parentArrangeBoxControlElement = this;
+    this.buttonActivateAll.setAttribute('data-button-type', 'activateAll');
 
-    this.buttonDeactivate.addEventListener('click', this.handleDeactivatePress);
-    this.buttonDeactivateAll.addEventListener('click', this.handleDeactivateAllPress);
+    this.buttonDeactivate.parentArrangeBoxControlElement = this;
+    this.buttonDeactivate.setAttribute('data-button-type', 'deactivate');
+    this.buttonDeactivateAll.parentArrangeBoxControlElement = this;
+    this.buttonDeactivateAll.setAttribute('data-button-type', 'deactivateAll');    
 
-    this.buttonSortUpTop.addEventListener('click', () => this.handleSortUpTopPress('left'))
-    this.buttonActiveSortUpTop.addEventListener('click', () => this.handleSortUpTopPress('right'))
+    this.buttonSortUpTop.parentArrangeBoxControlElement = this;
+    this.buttonSortUpTop.setAttribute('data-button-type', 'sortUpTop');
+    this.buttonActiveSortUpTop.parentArrangeBoxControlElement = this;
+    this.buttonActiveSortUpTop.setAttribute('data-button-type', 'activeSortUpTop');
 
-    this.buttonSortUp.addEventListener('click', () => this.handleSortUpPress('left'));
-    this.buttonActiveSortUp.addEventListener('click', () => this.handleSortUpPress('right'));
+    this.buttonSortUp.parentArrangeBoxControlElement = this;
+    this.buttonSortUp.setAttribute('data-button-type', 'sortUp');
+    this.buttonActiveSortUp.parentArrangeBoxControlElement = this;
+    this.buttonActiveSortUp.setAttribute('data-button-type', 'activeSortUp');
 
-    this.buttonSortDown.addEventListener('click', () => this.handleSortDownPress('left'));
-    this.buttonActiveSortDown.addEventListener('click', () => this.handleSortDownPress('right'));
+    this.buttonSortDown.parentArrangeBoxControlElement = this;
+    this.buttonSortDown.setAttribute('data-button-type', 'sortDown');
+    this.buttonActiveSortDown.parentArrangeBoxControlElement = this;
+    this.buttonActiveSortDown.setAttribute('data-button-type', 'activeSortDown');
 
-    this.buttonSortDownBottom.addEventListener('click', () => this.handleSortDownBottomPress('left'))
-    this.buttonActiveSortDownBottom.addEventListener('click', () => this.handleSortDownBottomPress('right'))
+    this.buttonSortDownBottom.parentArrangeBoxControlElement = this;
+    this.buttonSortDownBottom.setAttribute('data-button-type', 'sortDownBottom');
+    this.buttonActiveSortDownBottom.parentArrangeBoxControlElement = this;
+    this.buttonActiveSortDownBottom.setAttribute('data-button-type', 'activeSortDownBottom');
 
-    this.inputFilter.addEventListener('input', this.handleFilterByNameLeft);
-    this.inputFilter.filterTargetList = this.shadow.getElementById('list').children;
     this.inputFilter.parentArrangeBoxControlElement = this;
-    this.inputActiveFilter.addEventListener('input', this.handleFilterByNameRight)
-    this.inputActiveFilter.filterTargetList = this.shadow.getElementById('list-active').children;
+    this.inputFilter.setAttribute('data-filter-side', 'left');
     this.inputActiveFilter.parentArrangeBoxControlElement = this;
+    this.inputActiveFilter.setAttribute('data-filter-side', 'right');
+
+
   }
 };

@@ -1,4 +1,6 @@
 export default class ArrangeBoxControlTextFilterClass extends HTMLElement {
+  static observedAttributes = ['data-filter-side']
+
   constructor() {
     super();
     this.shadow = this.attachShadow({ mode: 'open' });
@@ -6,6 +8,7 @@ export default class ArrangeBoxControlTextFilterClass extends HTMLElement {
     this.inputElement = document.createElement('input');
     this.filterTargetList;
     this.parentArrangeBoxControlElement;
+    this.handleInput = this.handleInput.bind(this);
   };
 
   handleInput(e) {
@@ -15,15 +18,25 @@ export default class ArrangeBoxControlTextFilterClass extends HTMLElement {
         e.target.value = e.target.value.replace(processInputRegExp, '')
       }
       let searchRegExp = new RegExp(`${e.target.value}`, 'gi');
-      if (searchRegExp.test(child.text) === false) {
-        this.parentArrangeBoxControlElement.excludeItemsBySearchLeft = [...this.parentArrangeBoxControlElement.excludeItemsBySearchLeft, child]
-        this.parentArrangeBoxControlElement.assignStyles()
-      } else {
-        this.parentArrangeBoxControlElement.excludeItemsBySearchLeft = this.parentArrangeBoxControlElement.excludeItemsBySearchLeft.filter(current => current != child)
-        this.parentArrangeBoxControlElement.assignStyles()
-      }
+      if (this.dataset.filterSide == 'left') {
+        if (searchRegExp.test(child.text) === false) {
+          this.parentArrangeBoxControlElement.excludeItemsBySearchLeft = [...this.parentArrangeBoxControlElement.excludeItemsBySearchLeft, child]
+          this.parentArrangeBoxControlElement.assignStyles()
+        } else {
+          this.parentArrangeBoxControlElement.excludeItemsBySearchLeft = this.parentArrangeBoxControlElement.excludeItemsBySearchLeft.filter(current => current != child)
+          this.parentArrangeBoxControlElement.assignStyles()
+        }  
+      } else if (this.dataset.filterSide == 'right') {
+        if (searchRegExp.test(child.text) === false) {
+          this.parentArrangeBoxControlElement.excludeItemsBySearchRight = [...this.parentArrangeBoxControlElement.excludeItemsBySearchRight, child]
+          this.parentArrangeBoxControlElement.assignStyles()
+        } else {
+          this.parentArrangeBoxControlElement.excludeItemsBySearchRight = this.parentArrangeBoxControlElement.excludeItemsBySearchRight.filter(current => current != child)
+          this.parentArrangeBoxControlElement.assignStyles()
+        } 
+      }  
     }
-  }
+  };
 
   connectedCallback() {
     this.styling.textContent = `
@@ -39,8 +52,21 @@ export default class ArrangeBoxControlTextFilterClass extends HTMLElement {
       }
     `;
     this.shadow.appendChild(this.styling);
-    this.shadow.appendChild(this.inputElement);
-
-    this.inputElement.addEventListener('input', (e) => this.handleInput(e))
+    this.shadow.appendChild(this.inputElement);   
   }
-}
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    switch (this.dataset.filterSide) {
+      case 'left':
+        this.filterTargetList = this.parentArrangeBoxControlElement.shadow.getElementById('list').children;
+        this.excludeList = this.parentArrangeBoxControlElement.excludeItemsBySearchLeft;
+        this.inputElement.addEventListener('input', (e) => this.handleInput(e));
+        break;
+      case 'right':
+        this.filterTargetList = this.parentArrangeBoxControlElement.shadow.getElementById('list-active').children;
+        this.excludeList = this.parentArrangeBoxControlElement.excludeItemsBySearchRight;
+        this.inputElement.addEventListener('input', (e) => this.handleInput(e));
+        break;
+    }
+  }
+};
